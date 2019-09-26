@@ -1,0 +1,59 @@
+//12/12/18
+//Anandou Candassamy
+//TP3 de Méthode Numérique
+
+function R = recalage_orthogonal(X, Y)
+    B =X*Y';
+    [U,S,V] = svd(B);
+    R = V*U';
+endfunction
+
+N = 1000;
+x1 = rand(1, N);
+x2 = rand(1, N);
+x3 = cos(5*x1)+x2.^2;
+X =[x1;x2;x3];
+size(X);
+
+M = rand(3,3);
+[U,S,V]=svd(M);
+R = V*U';
+Y = 0.01*rand(3,N);
+for i =1:N
+    Y(:,i) = Y(:,i) + R*X(:,i);
+end
+
+R1 = recalage_orthogonal(X, Y);
+//disp(R1, "matrice recalage");
+//disp(R1-R, "difference de R1 et R");
+/**
+Résultat obtenu
+   0.2582964   0.8112802  -0.5245069
+   0.8745249   0.0343297   0.4837641
+  -0.4104744   0.5836489   0.7006174
+**/
+
+function B = svd_tronquee(A, k)
+    [rang] = rank(A)
+    if k < rank(A) then
+        disp("traitement")
+        [U,S,V] = svd(A);
+        Uact=U (:, 1:k);
+        Vact = V(:,1:k);
+        Sact = S(1:k, 1:k);
+        B = Uact*Sact*Vact';
+    end
+endfunction
+
+k = 1;
+
+IM1 = imread('F:\Polytech Paris Sud\ET4\S7\TP_MN\TP3\lena.png');
+IM2 = rgb2gray(IM1);
+A = double(IM2);
+disp(rank(A));
+B = svd_tronquee(A,k);
+//disp(X, "matrice X");
+//disp(B);
+imshow(uint8(B));
+disp(norm(A-B), "norme de diff");
+
